@@ -22,7 +22,7 @@ function Cards(props) {
   return (
       <div
       className="relative w-72 h-44 rounded-xl overflow-hidden shadow-md bg-cover bg-center"
-      style={{ backgroundImage: `url(../../../images/${props.name}.jpg)` }}
+      style={{ backgroundImage: `url(/images/${props.name}.jpg)` }}
   >
       <div className="text-stone-100 absolute inset-0 bg-gradient-to-t from-black to-transparent flex flex-col justify-between p-4">
         <div className="flex items-center justify-between">

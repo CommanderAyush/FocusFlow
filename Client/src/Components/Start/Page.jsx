@@ -18,7 +18,7 @@ function Page() {
             </div>
             
             <div className='flex-1/2 '>
-                <img  className=' my-auto' src="../../../images/image_no_bg.png" alt="" />
+                <img  className=' my-auto' src="images/image_no_bg.png" alt="" />
             </div>
         </div>
     </div>
