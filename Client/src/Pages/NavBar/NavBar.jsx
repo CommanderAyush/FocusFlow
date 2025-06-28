@@ -9,7 +9,7 @@ function NavBar() {
     <nav>
         <div className='flex flex-row items-center border-1 border-neutral-200  drop-shadow-md justify-between rounded-2xl bg-white text-lg font-medium font-Montserrat select-none my-0'>
             <div className='p-0 flex items-center mx-5 ' >
-                <img  className='w-10 h-10' src="../../../images/New_logo.png" alt="" />
+                <img  className='w-10 h-10' src="/images/New_logo.png" alt="" />
                 <span className=' text-3xl text-blue-300 font-semibold mt-2 px-1'>focusflow</span>
             </div>
             <div className='my-5 flex flex-row gap-10 text-blue-400'>

@@ -8,7 +8,7 @@ function StartNav(props) {
         <nav className='flex items-end bg-neutral-50 border-1 border-neutral-200 rounded-2xl '>
             
             <div className='p-3 flex items-center mx-5'>
-                <img  className='w-9 h-9 inline mb-2' src="../../../images/New_logo.png" alt="" />
+                <img  className='w-9 h-9 inline mb-2' src="/images/New_logo.png" alt="" />
                 <span className=' text-3xl p-2 font-semibold text-cyan-500'>focusflow</span>
             </div>
             
