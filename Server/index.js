@@ -23,7 +23,7 @@ const db=new pg.Client({
     database:DATABASE,
     password:PASSWORD,
     port:DATABASEPORT,
-    // ssl:true
+    ssl:true
 })
 db.connect()
 
