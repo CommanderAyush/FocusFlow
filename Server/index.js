@@ -23,7 +23,7 @@ const db=new pg.Client({
     database:DATABASE,
     password:PASSWORD,
     port:DATABASEPORT,
-    ssl:true
+    // ssl:true
 })
 db.connect()
 
@@ -55,9 +55,9 @@ function decrypt(encryptedData) {
 
 
 //using cors to allow my front end to talk to my backend
-app.use(cors(
-    origin=process.env.URL
-));
+
+app.use(cors());
+
 //just a body-parser
 app.use(express.json())
 
