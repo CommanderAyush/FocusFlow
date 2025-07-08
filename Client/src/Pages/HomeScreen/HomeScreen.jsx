@@ -3,7 +3,8 @@ import YoutubeLinks from './YoutubeLinks'
 import Cards from './Cards'
 import axios from "axios"
 import {useParams} from "react-router"
-
+import Goals from './Goals'
+import Journal from './Journal'
 
 function HomeScreen() {
   const username=useParams().username;
@@ -113,18 +114,27 @@ function HomeScreen() {
     <>
       <div className='flex flex-col place-items-center h-screen bg-sky-50 over '>
                   
-        <div
-          className="relative w-60 h-60 rounded-full mt-5"
-          style={{
-            background: `conic-gradient(#38bdf8 ${angle}deg, #e5e7eb ${angle}deg)`
-          }}
-        >
-          <div className="absolute inset-1 bg-white rounded-full flex items-center justify-center">
-            <span className="text-xl font-semibold text-gray-700">
-              {timerValue()}
-            </span>
+        <div className='w-full flex flex-row justify-evenly'>
+          <Goals/>
+          
+          <div
+            className="relative w-60 h-60 rounded-full mt-5"
+            style={{
+              background: `conic-gradient(#38bdf8 ${angle}deg, #e5e7eb ${angle}deg)`
+            }}
+          >
+            <div className="absolute inset-1 bg-white rounded-full flex items-center justify-center">
+              <span className="text-xl font-semibold text-gray-700">
+                {timerValue()}
+              </span>
+            </div>
           </div>
+
+
+          <Journal/>
+
         </div>
+        
         <div>
           <p className='m-5 font-Montserrat font-semibold text-2xl text-sky-500'>One Step At A Time</p>
         </div>
