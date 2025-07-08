@@ -16,7 +16,7 @@ function Goals() {
                 Start Journaling
             </h2>
 
-           <img src="images/Journal4.png" alt="" />
+           <img src="/images/Journal4.png" alt="" />
         </div>
   )
 }
