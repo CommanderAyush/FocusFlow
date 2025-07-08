@@ -3,7 +3,8 @@ const cors = require("cors")
 const pg = require("pg") 
 const dotenv =require("dotenv")
 const crypto = require("crypto")
-
+const jwt = require("jsonwebtoken")
+const cookieParser=require("cookie-parser")
 
 const app = express()
 dotenv.config()
@@ -15,6 +16,8 @@ const HOST=process.env.HOST
 const DATABASE=process.env.DATABASE
 const PASSWORD=process.env.PASSWORD
 const DATABASEPORT=process.env.DATABASEPORT
+const JWT_SECRET=process.env.JWT_SECRET
+const URL=process.env.URL
 
 //setting up the database
 const db=new pg.Client({
@@ -23,7 +26,7 @@ const db=new pg.Client({
     database:DATABASE,
     password:PASSWORD,
     port:DATABASEPORT,
-    ssl:true
+    // ssl:true
 })
 db.connect()
 
@@ -51,15 +54,35 @@ function decrypt(encryptedData) {
   return decrypted;
 }
 
+// Authentication
+const authenticateToken = (req, res, next) => {
+    const token = req.cookies.token;
+    // console.log(token)   
+    if (!token) return res.status(401).json({ message: 'Access Denied: No Token Provided' });
 
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ message: 'Invalid or Expired Token' });
 
+        req.user = user;
+        next();
+    });
+};
 
 //using cors to allow my front end to talk to my backend
 
-app.use(cors());
+app.use(cors({
+  origin: URL, 
+  credentials: true
+}));
+
+app.use(cookieParser());
 
 //just a body-parser
 app.use(express.json())
+
+app.get("/userId/check", authenticateToken, (req, res) => {
+  res.sendStatus(200); // or res.json({ user: req.user });
+});
 
 app.post("/register",async(req,res)=>{
     const username=req.body.Username.username
@@ -79,6 +102,11 @@ app.post("/register",async(req,res)=>{
     {
         const date=new Date().getTime();
         const password=encrypt(passwordTemp);
+
+        const token = jwt.sign({username: username},JWT_SECRET,{ expiresIn: '10m' });
+        res.cookie("token", token, { httpOnly: true });
+
+
         db.query("Insert INTO users(username,password) VALUES($1,$2)",
             [username,password]
         ).then(
@@ -123,6 +151,9 @@ app.post("/login",async (req,res)=>{
         const true_pass=decrypt(response.rows[0].password)
         if(password==true_pass)
         {
+            
+            const token = jwt.sign({username: username},JWT_SECRET,{ expiresIn: '10m' });
+            res.cookie("token", token, { httpOnly: true });
             res.send("OK");
         }
         else
@@ -132,7 +163,7 @@ app.post("/login",async (req,res)=>{
     }
 })
 
-app.get("/getTime/:username",async (req,res)=>{
+app.get("/getTime/:username",authenticateToken,async (req,res)=>{
     const username=req.params.username;
     const date=await db.query("Select times from times where username=$1 ",
         [username]
@@ -166,7 +197,7 @@ app.get("/getCards/:username",async (req,res)=>{
 })
 
 //changing the data on the basis of checkbox
-app.post('/changeCards/:username/:activity',async (req,res)=>{
+app.post('/changeCards/:username/:activity',authenticateToken,async (req,res)=>{
     const {username,activity}=req.params;
     const data=req.body.Checked.data
     if(data)
@@ -184,7 +215,7 @@ app.post('/changeCards/:username/:activity',async (req,res)=>{
 })
 
 //getting the Tasks
-app.get('/getTasks/:username/:Timely',async (req,res)=>{
+app.get('/getTasks/:username/:Timely',authenticateToken,async (req,res)=>{
     let {username,Timely}=req.params;
     Timely=`${Timely}tasks`
     const data =await db.query(`Select id,tasks from ${Timely} where username=($1) order by id ASC`,
@@ -193,7 +224,7 @@ app.get('/getTasks/:username/:Timely',async (req,res)=>{
     res.json(data.rows)
 })
 //adding the task
-app.post('/addTasks/:username/:Timely',async (req,res)=>{
+app.post('/addTasks/:username/:Timely',authenticateToken,async (req,res)=>{
     let {username,Timely}=req.params;
     const data=req.body.task
     Timely=`${Timely}tasks`
@@ -206,7 +237,7 @@ app.post('/addTasks/:username/:Timely',async (req,res)=>{
     return res.json({id:id.rows});
 })
 //delete the task
-app.get('/deleteTasks/:Timely/:id',async (req,res)=>{
+app.get('/deleteTasks/:Timely/:id',authenticateToken,async (req,res)=>{
     let {Timely,id}=req.params;
     Timely=`${Timely}tasks`
     await db.query(`Delete from ${Timely} where id=($1)`,
@@ -216,7 +247,7 @@ app.get('/deleteTasks/:Timely/:id',async (req,res)=>{
 })
 
 //updating the task
-app.post('/updateTasks/:Timely/:id',async (req,res)=>{
+app.post('/updateTasks/:Timely/:id',authenticateToken,async (req,res)=>{
     let {Timely,id}=req.params;
     Timely=`${Timely}tasks`
     const data=req.body.text
@@ -227,7 +258,7 @@ app.post('/updateTasks/:Timely/:id',async (req,res)=>{
 })
 
 //adding the notes  
-app.post('/addNotes/:Timely/:id',async (req,res)=>{
+app.post('/addNotes/:Timely/:id',authenticateToken,async (req,res)=>{
     let {Timely,id}=req.params;
     Timely=`${Timely}tasks`
     const data=req.body.text
@@ -238,7 +269,7 @@ app.post('/addNotes/:Timely/:id',async (req,res)=>{
 })
 
 //getting the notes
-app.get('/getNotes/:Timely/:id',async (req,res)=>{
+app.get('/getNotes/:Timely/:id',authenticateToken,async (req,res)=>{
     let {Timely,id}=req.params;
     Timely=`${Timely}tasks`
     const data=await db.query(`Select note from ${Timely} where id=($1)`,
@@ -248,7 +279,7 @@ app.get('/getNotes/:Timely/:id',async (req,res)=>{
 })
 
 //adding the log
-app.post('/addLog/:username',async (req,res)=>{
+app.post('/addLog/:username',authenticateToken,async (req,res)=>{
     const {username}=req.params;
     const {date,mood,journal}=req.body
     const encryptedJournal=encrypt(journal);
@@ -259,7 +290,7 @@ app.post('/addLog/:username',async (req,res)=>{
 })
 
 //getting the log
-app.get('/getLog/:username/:date',async (req,res)=>{
+app.get('/getLog/:username/:date',authenticateToken,async (req,res)=>{
     const {username,date}=req.params;
     const data=await db.query("Select * from FocusLog where username=($1) and date=($2)",
         [username,date]
@@ -273,13 +304,13 @@ app.get('/getLog/:username/:date',async (req,res)=>{
 })
 
 //getting the blog
-app.get('/getBlogs',async (req,res)=>{
+app.get('/getBlogs',authenticateToken,async (req,res)=>{
     const data=await db.query("Select * from Blogs order by id desc")
     res.json(data.rows)
 })
 
 //adding the blog
-app.post('/addBlog',async (req,res)=>{
+app.post('/addBlog',authenticateToken,async (req,res)=>{
     const {id,author,content,timestamp,likes}=req.body.Blog
     
     await db.query("Insert into Blogs(id,author,content,times) values($1,$2,$3,$4)",

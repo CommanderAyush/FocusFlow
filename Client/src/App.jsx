@@ -8,16 +8,17 @@ import FlowTasks from './Pages/FlowTasks/FlowTasks.jsx'
 import FocusLog from './Pages/FocusLog/FocusLog.jsx'
 import FlowTribe from './Pages/FlowTribe/FlowTribe.jsx'
 import Settings from "./Pages/Settings/Settings.jsx";
+import ProtectedRoute from "./Components/Protected/ProtectedRoute.jsx";
 
-console.log(import.meta.env.VITE_baseURL)
+
 axios.defaults.baseURL=import.meta.env.VITE_baseURL
-axios.defaults.withCredentials=false;
+axios.defaults.withCredentials=true;
 
 const Ret=()=>{
   return(
     <Routes>
       <Route path='/' element={<StartPage/>}/>
-      <Route path='/userId/:username' element={<RootLayout/>}>
+      <Route path='/userId/:username' element={<ProtectedRoute><RootLayout/></ProtectedRoute>}>
         <Route index element={<HomeScreen/>}/>
         <Route path='FlowTasks' element={<FlowTasks/>}/>
         <Route path='FocusLog' element={<FocusLog/>}/>

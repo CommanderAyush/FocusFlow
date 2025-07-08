@@ -14,7 +14,7 @@ function FlowTasks() {
     setPeriod(Timely);
     setSelectedTask(null)
     setNotes('')
-    axios.get(`/getTasks/${username}/${Timely}`)
+    axios.get(`/getTasks/${username}/${Timely}`,{withCredentials:true})
     .then((res)=>{
         const data=res.data.map((val)=>{
           return {
@@ -31,7 +31,7 @@ function FlowTasks() {
     if (taskText.trim() === '') return;
     const id=await axios.post(`/addTasks/${username}/${period}`,{
       task:taskText
-    }).then(res=>res.data.id[0].id)
+    },{withCredentials:true}).then(res=>res.data.id[0].id)
     .catch(err=>console.log(err))
 
     const newTask = { id: id ,text: taskText };
@@ -42,7 +42,7 @@ function FlowTasks() {
 
   const deleteTask = (id) => {
     setTasks(tasks.filter((task) => task.id !== id));
-    axios.get(`/deleteTasks/${period}/${id}`)
+    axios.get(`/deleteTasks/${period}/${id}`,{withCredentials:true})
     .then((res)=>res).catch(err=>console.log(err))
 
     if (selectedTask?.id === id) {
@@ -56,7 +56,7 @@ function FlowTasks() {
     {
       text:newText,
       id:id
-    })
+    },{withCredentials:true})
     .then(res=>console.log(res))
     .catch(err=>console.log(err))
     setTasks(tasks.map((task) => (task.id === id ? { ...task, text: newText } : task)));
@@ -64,7 +64,7 @@ function FlowTasks() {
 
   const selectTask = (task) => {
     setSelectedTask(task);
-    axios.get(`/getNotes/${period}/${task.id}`)
+    axios.get(`/getNotes/${period}/${task.id}`,{withCredentials:true},{withCredentials:true})
     .then((res)=>{
       setNotes(res.data.note? res.data.note : '');
     })
@@ -79,7 +79,7 @@ function FlowTasks() {
     axios.post(`/addNotes/${period}/${id}`,
     {
       text:e.target.value,
-    })
+    },{withCredentials:true})
 
   }
 

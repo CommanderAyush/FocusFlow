@@ -17,7 +17,7 @@ function FlowTribe() {
     };
     axios.post(`/addBlog`,{
       Blog:newBlog
-    }).catch(err=>console.log(err))
+    },{withCredentials:true}).catch(err=>console.log(err))
 
     setBlogs([newBlog, ...blogs]);
     setAuthor('');
@@ -25,7 +25,7 @@ function FlowTribe() {
   };
 
   React.useEffect(() => {
-    axios.get(`/getBlogs`)
+    axios.get(`/getBlogs`,{withCredentials:true})
       .then((res) => {
         setBlogs(res.data);
       })

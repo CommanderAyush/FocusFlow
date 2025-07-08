@@ -28,7 +28,7 @@ function FocusLog () {
   };
 
   React.useEffect(()=>{
-    axios.get(`/getLog/${username}/${selectedDate}`)
+    axios.get(`/getLog/${username}/${selectedDate}`,{withCredentials:true})
     .then((res) => {
       if (res.data.length > 0) {
         setJournalEntries(res.data[0].logs);
@@ -49,7 +49,7 @@ function FocusLog () {
   const handleDateChange = (e) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
-    axios.get(`/getLog/${username}/${newDate}`)
+    axios.get(`/getLog/${username}/${newDate}`,{withCredentials:true})
       .then((res) => {
         if (res.data.length > 0) {
           setJournalEntries(res.data[0].logs);
@@ -74,7 +74,7 @@ function FocusLog () {
       date: selectedDate,
       mood: selectedMood.label,
       journal: journalEntries
-    }).catch(err=>console.log(err))
+    },{withCredentials:true}).catch(err=>console.log(err))
   }
 
   return (

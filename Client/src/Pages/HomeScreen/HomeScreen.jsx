@@ -49,7 +49,7 @@ function HomeScreen() {
   //getting the data for the cards
   useEffect(()=>{
     if(!username)return;
-    axios.get(`/getCards/${username}`)
+    axios.get(`/getCards/${username}`,{withCredentials:true})
     .then((res)=>{
       displayCards(res.data);
     })
@@ -92,7 +92,7 @@ function HomeScreen() {
     const percent = totalSeconds / (24 * 3600);
     setPercentage(percent);
 
-    console.log(percent);
+    
   };
 
   
