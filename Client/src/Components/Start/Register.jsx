@@ -10,6 +10,7 @@ function Register({changeLogin,changeRegister}) {
     const [wrong,setWrong]=React.useState(false);
     const [username,setUsername]=React.useState("");
     const [password,setPassword]=React.useState("");
+    const [loading,setLoading]= React.useState(false);
     const navigate=useNavigate();
     const LogButton=(e)=>{
         e.preventDefault();
@@ -51,7 +52,9 @@ function Register({changeLogin,changeRegister}) {
                     {wrong?<p className='ml-3  text-red-500'>Bad Credentials</p>:<p className='ml-3  text-blue-50'>Bad Credentials</p>}
                     <input className={`bg-white p-2 m-2 rounded-lg w-sm border-1 ${wrong?" border-red-600":null} `} placeholder={`saint@gmail.com `} onChange={(e)=>{setUsername(e.target.value);setWrong(false)}} type="text" name="" id="Username"/>
                     <input className={`bg-white p-2 m-2 rounded-lg border-1 ${wrong?" border-red-600":null}`} placeholder='********' onChange={(e)=>{setPassword(e.target.value);setWrong(false)}} type="password" name="" id="Passowrd" />
-                    <button onClick={userRegister} className='m-2 rounded-lg p-2 bg-blue-400 duration-300 ease-out hover:bg-blue-500 hover:cursor-pointer '>Register</button>
+                    <button onClick={userRegister} className='m-2 rounded-lg p-2 bg-blue-400 duration-300 ease-out hover:bg-blue-500 hover:cursor-pointer '>
+                        {loading?<div className="flex place-self-center w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>:<p className='inline'>Register</p>}       
+                    </button>
                     <button onClick={LogButton}><p className='text-sky-600 place-self-end mr-3 duration-200 ease-out hover:text-sky-800 hover:cursor-pointer'>already a member?</p></button>
                   </form>
                   

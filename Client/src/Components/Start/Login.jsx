@@ -10,6 +10,7 @@ function Login({changeLogin,changeRegister})
     const [username,setUsername]=React.useState("");
     const [password,setPassword]=React.useState("");
     const [wrong,setWrong]=React.useState(false);
+    const [loading,setLoading]= React.useState(false);
     const navigate=useNavigate();
     const RegButton=(e)=>{
         e.preventDefault();
@@ -19,7 +20,7 @@ function Login({changeLogin,changeRegister})
     function userLogin(e)
     {
         e.preventDefault();
-        
+        setLoading(true)
         axios.post("/login",{
             Username:{username},
             Password:{password}
@@ -39,7 +40,11 @@ function Login({changeLogin,changeRegister})
             {
                 setWrong(true);
             }
-        }).catch((e)=>console.log(e))
+            setLoading(false)
+        }).catch((e)=>{
+            console.log(e)
+            setLoading(false)
+        })
     }
 
     return(
@@ -57,7 +62,10 @@ function Login({changeLogin,changeRegister})
                     {wrong?<p className='ml-3  text-red-500'>Bad Credentials</p>:<p className='ml-3  text-blue-50 '>Bad Credentials</p>}
                         <input className={`bg-white p-2 m-2 rounded-lg w-sm border-1 ${wrong?" border-red-600":null}`} placeholder='example@gmail.com' type="text" value={username} onChange={(e)=>{setUsername(e.target.value);setWrong(false)}} id="Username"/>
                         <input className={`bg-white p-2 m-2 rounded-lg border-1 ${wrong?"border-red-600":null}`} placeholder='********' type="password" value={password} onChange={(e)=>{setPassword(e.target.value);setWrong(false)}} name="" id="Passowrd" />
-                        <button onClick={userLogin} className='m-2 rounded-lg p-2 bg-blue-400 duration-300 ease-out hover:bg-blue-500 hover:cursor-pointer'>Login</button>
+                        <button onClick={userLogin} className=' m-2 rounded-lg p-2 bg-blue-400 duration-300 ease-out hover:bg-blue-500 hover:cursor-pointer'>
+                            {loading?<div className="flex place-self-center w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>:<p className='inline'>Login</p>}       
+                            
+                        </button>
                         <button onClick={RegButton}><p className='text-sky-600 place-self-end mr-3 duration-200 ease-out hover:text-sky-800 hover:cursor-pointer'>New member?</p></button>
                     </form>
                     

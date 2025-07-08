@@ -104,7 +104,11 @@ app.post("/register",async(req,res)=>{
         const password=encrypt(passwordTemp);
 
         const token = jwt.sign({username: username},JWT_SECRET,{ expiresIn: '10m' });
-        res.cookie("token", token, { httpOnly: true });
+        res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "None",  
+            secure: true
+            });
 
 
         db.query("Insert INTO users(username,password) VALUES($1,$2)",
@@ -153,7 +157,12 @@ app.post("/login",async (req,res)=>{
         {
             
             const token = jwt.sign({username: username},JWT_SECRET,{ expiresIn: '10m' });
-            res.cookie("token", token, { httpOnly: true });
+            res.cookie("token", token, {
+            httpOnly: true,
+            sameSite: "None",  
+            secure: true
+            });
+
             res.send("OK");
         }
         else
