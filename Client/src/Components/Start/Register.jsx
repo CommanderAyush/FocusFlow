@@ -20,6 +20,7 @@ function Register({changeLogin,changeRegister}) {
     function userRegister(e)
     {
         e.preventDefault();
+        setLoading(true)
         axios.post("/register",{
             Username:{username},
             Password:{password}
@@ -33,8 +34,11 @@ function Register({changeLogin,changeRegister}) {
                 setProfileName(username);
                 navigate(`/userId/${username}`);
             }
-            
-        }).catch((e)=>console.log(e))
+            setLoading(true)
+        }).catch((e)=>{
+            console.log(e)
+            setLoading(true)
+        })
     }
 
     return(
